@@ -31,6 +31,13 @@ class Run
             }
         };
         display.setSize(WIDTH, HEIGHT);
+        f.addKeyListener(new KeyAdapter()
+        {
+            public void keyPressed(KeyEvent e)
+            {
+                if(e.getKeyCode() == 32)session.toggle();
+            }
+        });
         display.setDoubleBuffered(true);
         f.add(display);
         f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -52,18 +59,23 @@ class Run
 }
 class Game
 {
-    public static final char END_SYMBOL = '|', STATE_CHANGE_SYMBOL = '{', STATE_CHANGE_SEPERATOR = ':';
-    public static final String PRINT_DELIMITER = "  ", STATE_CHANGE_DELIMITER = ",";
+    public static final char STATE_CHANGE_SYMBOL = '{', STATE_CHANGE_SEPERATOR = ':';
+    public static final String PRINT_DELIMITER = "  ", STATE_CHANGE_DELIMITER = ",", START_SYMBOL = ":", END_SYMBOL = "|";
     private String playerName;
-    private GameEvent history;
+    private GameEvent history, current, history_curr;
     private GameEvent gamedata;
     private State state;
+    private boolean on_standby, ended;
     public Game(String playerName, BufferedReader dataStream) throws Exception
     {
         this.playerName = playerName;
-        this.history = new GameEvent();
+        this.history = null;
+        this.current = null;
+        this.history_curr = null;
         this.gamedata = new GameEvent(dataStream.readLine().trim());
         this.state = new State();
+        this.on_standby = true;
+        this.ended = false;
         getGameData(dataStream, this.gamedata);
         dataStream.close();
         printGameData(this.gamedata, ""); // comment on completion
@@ -74,43 +86,67 @@ class Game
         boolean next_option = false;
         while((line = br.readLine()) != null)
         {
-            if(Character.isDigit(line.charAt(0)))
+            if(next_option && line.length() > 1)
             {
-                if(!next_option)
-                {
-                    root.next = new Choice();
-                    root = root.next;
-                    next_option = true;
-                }
-                if(line.charAt(line.length() - 1) == END_SYMBOL){((Choice)root).addOption(line.substring(1, line.length() - 1).trim());}
+                if(line.endsWith(END_SYMBOL)){((Choice)root).addOption(line.trim().substring(1, line.length() - 1).trim());}
                 else
                 {
-                    ((Choice)root).addOption(line.substring(1).trim());
+                    ((Choice)root).addOption(line.trim().substring(1).trim());
                     getGameData(br, ((Choice)root).getLastOption());
                 }
             }
-            else if(line.charAt(line.length() - 1) == END_SYMBOL)
+            else if(line.endsWith(END_SYMBOL))
             {
-                line = line.substring(0, line.length() - 1).trim();
-                if(!line.equals("")){root.next = new GameEvent(line);}
+                if(line.length() > 1){root.next = new GameEvent(line.trim().substring(0, line.length() - 1).trim());}
                 return;
             }
             else
             {
-                root.next = new GameEvent(line.trim());
+                if(line.endsWith(START_SYMBOL))
+                {
+                    root.next = new Choice(line.trim().substring(0, line.length() - 1).trim());
+                    next_option = true;
+                }
+                else
+                {
+                    root.next = new GameEvent(line.trim());
+                    next_option = false;
+                }
                 root = root.next;
-                next_option = false;
             }
         }
     }
     public void next()
     {
-        // take turn / do nothing
+        if(on_standby || ended) return;
+        if(current == null)
+        {
+            current = gamedata;
+            return;
+        }
+        if(history == null)
+        {
+            history = new GameEvent(current.eventDescripton);
+            history_curr = history;
+        }
+        else
+        {
+            history_curr.next = new GameEvent(current.eventDescripton);
+            history_curr = history_curr.next;
+        }
+        if(current instanceof Choice)current = ((Choice)current).select(this.requestOption(), this.state);
+        else
+        {
+            current = current.next;
+            if(current == null) ended = true;
+        }
+        this.toggle();
     }
     private static void printGameData(GameEvent event, String delim)
     {
         while(event != null)
         {
+            System.out.println(delim + event.eventDescripton);
             if(event instanceof Choice)
             {
                 String[] opts = ((Choice)event).getOptionDescriptions();
@@ -121,38 +157,55 @@ class Game
                 }
                 return;
             }
-            else
-            {
-                System.out.println(delim + event.eventDescripton);
-                event = event.next;
-            }
+            else event = event.next;
         }
     }
     public void draw(Graphics g, Dimension d)
     {
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, (int)d.getWidth(), (int)d.getHeight());
-        // draw media
+        GameEvent e = history;
+        String str = "";
+        while(e != null)
+        {
+            str += e.eventDescripton + " \n";
+            e = e.next;
+        }
+        char[] chrs = new char[str.length()];
+        for(int i = 0; i< str.length(); i++)
+        {
+            chrs[i] = str.charAt(i);
+        }
+        g.setColor(Color.BLACK);
+        g.drawChars(chrs, 0, str.length(), 100, 100);
+        // draw media temporary display
     }
+    public void toggle(){this.on_standby = !this.on_standby;}
+    public int requestOption()
+    {
+        // request user to select a choice option
+        return 0;
+    }
+    public boolean ended(){return this.ended;}
 }
 class State
 {
-    private static final int MAX_BAR_VALUE = 100, STATE_SIZE = 3;
+    public static final int MAX_BAR_VALUE = 100, STATE_SIZE = 3;
     private int water_bar_value, food_bar_value, energy_bar_value;
     public State()
     {
-        this.water_bar_value = 0;
-        this.food_bar_value = 0;
-        this.energy_bar_value = 0;
+        this.water_bar_value = (int)(0.75 * MAX_BAR_VALUE);
+        this.food_bar_value = (int)(0.75 * MAX_BAR_VALUE);
+        this.energy_bar_value = (int)(0.75 * MAX_BAR_VALUE);
     }
     public void applyChanges(int[] values)
     {
         this.water_bar_value += values[0];
         this.food_bar_value += values[1];
         this.energy_bar_value += values[2];
-        this.water_bar_value = Math.min(MAX_BAR_VALUE, water_bar_value);
-        this.food_bar_value = Math.min(MAX_BAR_VALUE, food_bar_value);
-        this.energy_bar_value = Math.min(MAX_BAR_VALUE, energy_bar_value);
+        this.water_bar_value = Math.min(MAX_BAR_VALUE, Math.max(0, water_bar_value));
+        this.food_bar_value = Math.min(MAX_BAR_VALUE, Math.max(0, food_bar_value));
+        this.energy_bar_value = Math.min(MAX_BAR_VALUE, Math.max(0, energy_bar_value));
     }
     public static int[] parse(String s)
     {
@@ -210,9 +263,15 @@ class Choice extends GameEvent
         this.options = new ArrayList<GameEvent>();
         this.stateChanges = new ArrayList<int[]>();
     }
-    public Choice(String[] options)
+    public Choice(String desc)
     {
-        super();
+        super(desc);
+        this.options = new ArrayList<GameEvent>();
+        this.stateChanges = new ArrayList<int[]>();
+    }
+    public Choice(String desc, String[] options)
+    {
+        super(desc);
         this.options = new ArrayList<GameEvent>();
         this.stateChanges = new ArrayList<int[]>();
         for(int i = 0; i < options.length; i++){this.addOption(options[i]);}
@@ -220,7 +279,12 @@ class Choice extends GameEvent
     public void addOption(String option)
     {
         int stateChangePosition = option.indexOf(Game.STATE_CHANGE_SYMBOL);
-        this.stateChanges.add(State.parse(option.substring(stateChangePosition + 1, option.length() - 1)));
+        if(stateChangePosition == -1)
+        {
+            this.stateChanges.add(new int[State.STATE_SIZE]);
+            stateChangePosition = option.length();
+        }
+        else this.stateChanges.add(State.parse(option.substring(stateChangePosition + 1, option.length() - 1)));
         if(this.next == null){this.next = new GameEvent(option.substring(0, stateChangePosition).trim());}
         else{this.options.add(new GameEvent(option.substring(0, stateChangePosition).trim()));}
     }
