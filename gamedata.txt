@@ -1,0 +1,10 @@
+an event
+another one
+this is a choice
+1 option 1
+2 option 2
+ok another event
+lets start another choice
+1 continue
+2 stop
+last event
