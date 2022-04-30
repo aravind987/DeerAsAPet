@@ -61,6 +61,7 @@ class Game
 {
     public static final char STATE_CHANGE_SYMBOL = '{', STATE_CHANGE_SEPERATOR = ':';
     public static final String PRINT_DELIMITER = "  ", STATE_CHANGE_DELIMITER = ",", START_SYMBOL = ":", END_SYMBOL = "|";
+    private static final Image[] media = {new ImageIcon(Run.class.getResource("sample.gif")).getImage()};
     private String playerName;
     private GameEvent history, current, history_curr;
     private GameEvent gamedata;
@@ -178,6 +179,7 @@ class Game
         }
         g.setColor(Color.BLACK);
         g.drawChars(chrs, 0, str.length(), 100, 100);
+        g.drawImage(media[0], 10, 10, 200, 150, Color.WHITE, null); // gif
         // draw media temporary display
     }
     public void toggle(){this.on_standby = !this.on_standby;}
