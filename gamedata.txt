@@ -1,10 +1,12 @@
 an event
 another one
 this is a choice
-1 option 1
-2 option 2
-ok another event
-lets start another choice
-1 continue
-2 stop
-last event
+1 option 1 {water: +1, food: -1, energy: 0}
+sub choice
+1 sub opt 1 {}|
+2 sub opt 2 {}
+this happens in sub opt 2|
+3 sub opt 3 {water: +2}
+|
+|
+2 option 2 {}|
