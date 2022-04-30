@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.*;
 import java.util.*;
 import java.io.*;
 class Run
@@ -79,7 +80,7 @@ class Game
         this.ended = false;
         getGameData(dataStream, this.gamedata);
         dataStream.close();
-        printGameData(this.gamedata, ""); // comment on completion
+        //printGameData(this.gamedata, ""); // comment on completion
     }
     private static void getGameData(BufferedReader br, GameEvent root) throws Exception
     {
@@ -163,7 +164,7 @@ class Game
     }
     public void draw(Graphics g, Dimension d)
     {
-        g.setColor(Color.WHITE);
+        g.setColor(this.state.base);
         g.fillRect(0, 0, (int)d.getWidth(), (int)d.getHeight());
         GameEvent e = history;
         String str = "";
@@ -179,8 +180,15 @@ class Game
         }
         g.setColor(Color.BLACK);
         g.drawChars(chrs, 0, str.length(), 100, 100);
-        g.drawImage(media[0], 10, 10, 200, 150, Color.WHITE, null); // gif
+        //g.drawImage(media[0], 10, 10, media[0].getWidth(null), media[0].getWidth(null), Color.WHITE, null); // gif
         // draw media temporary display
+        Graphics2D g2d = (Graphics2D)g;
+        g2d.setColor(new Color(255 - this.state.base.getRed(), 255 - this.state.base.getGreen(), 255 - this.state.base.getBlue()));  // chrome yellow
+        g2d.setStroke(new BasicStroke(10.0f));
+        g2d.drawRoundRect(0, 0, d.width, d.height, 20, 20);
+        // add here
+        g.setColor(this.state.overlay);
+        g.fillRect(0, 0, (int)d.getWidth(), (int)d.getHeight());
     }
     public void toggle(){this.on_standby = !this.on_standby;}
     public int requestOption()
@@ -193,12 +201,46 @@ class Game
 class State
 {
     public static final int MAX_BAR_VALUE = 100, STATE_SIZE = 3;
-    private int water_bar_value, food_bar_value, energy_bar_value;
+    private int water_bar_value, food_bar_value, energy_bar_value, gif;
+    private boolean slow_base_change;
+    public Color base, overlay;
     public State()
     {
         this.water_bar_value = (int)(0.75 * MAX_BAR_VALUE);
         this.food_bar_value = (int)(0.75 * MAX_BAR_VALUE);
         this.energy_bar_value = (int)(0.75 * MAX_BAR_VALUE);
+        this.base = new Color(255, 255, 255, 255);
+        this.overlay = new Color(0, 0, 0, 0);
+        this.slow_base_change = false;
+        this.gif = 0;
+        new Thread(new Runnable(){
+            public void run()
+            {
+                Random r = new Random();
+                int value = 255, delta = 5, sleep = 1 + r.nextInt(8);
+                while(true)
+                {
+                    value += delta;
+                    sleep += 1;
+                    sleep = Math.min(sleep, 25);
+                    if(value <= 0 || value >= 255)
+                    {
+                        delta = -delta;
+                        value = Math.min(255, Math.max(0, value));
+                        sleep = 1 + r.nextInt(10);
+                        try
+                        {
+                            if(!slow_base_change)Thread.sleep(300 + r.nextInt(700));
+                            else Thread.sleep(10000);
+                        }
+                        catch(InterruptedException e){}
+                    }
+                    base = new Color(value, value, value);
+                    try{Thread.sleep(sleep);}
+                    catch(InterruptedException e){}
+                }
+            }
+        }).start();
     }
     public void applyChanges(int[] values)
     {
@@ -239,6 +281,7 @@ class State
         desc += "energy: " + (values[2] < 0 ? "" : "+") + values[2];
         return desc;
     }
+    public void toggle_base_change(){this.slow_base_change = !this.slow_base_change;}
 }
 class GameEvent
 {
