@@ -1,3 +1,316 @@
+The rolls of paper on the desk fall onto the floor, scattering as the aircraft continues to wobble. The control panel dials spin in wild directions, lights flashing as you hold on tightly to your seat. 
+The starlight blinds you as you wince at its brightness, thanking the tinted viewpanel of your helmet. This was supposed to be another expedition to Mars, what went wrong?
+You glance sideways and notice your backpack.
+:
+1 Grab the backpack...|
+Letting one hand go, you grab onto the backpack seconds before it hits the control panel. 
+You feel your muscles scream in pain as you try to pull yourself back onto the seat. 
+:
+1 Hold on...|
+You adjust your grip on the seat, but your pinky jams into the side of the metallic arm rest. You let go in pain and close your eyes, ready to embrace the impact of hitting the aircraft walls. 
+:
+1 Ow, that sort of hurts...|
+You open your eyes and you notice your surroundings. 
+:
+1 What happened?|
+Engine oil rolls down the cold metallic boards, the air dead with silence.
+Your entire body feels sore, but the view in front of you is worse. 
+:
+1  My space ship...|
+Dust from outside blows in and the metal boards creak under the breeze. You look around yourself and notice that the air bags were triggered, easing the impact. 
+:
+1 It seems like I crashed onto some planet with no atmosphere...|
+:
+1 Let's explore.|
+You get up, reaching over to the food pack that lay on its side. Your hands almost reach the pack when a thin, wine red arm swings through the aircraft boards and snatch it away from you. 
+:
+1 What was that? It was… scaly.|
+You hide in the dark as you peek through the metal boards. 
+The organism has its back to you, giving you a view of its short but curly tail. It pours the water out of the bottle in the food back, splattering the liquid over the rocks on the ground. It goes for the freeze dried berries next, ripping open its packaging and stuffing it's arms into it. 
+The batteries of the food pack pops out from the package, rolling towards you.
+:
+1 Wait a little longer.|
+You jump at the loud clang the boards make when the aircraft door breaks off, screeching as it drags along the floor for a while. The disturbing noises don't seem to bother the organism at all, almost as if it's deaf.
+:
+1 Wait, it's gone?|
+You sigh as you open your backpack, assembling the ore detector machine. Maybe this could be useful. After all, the bulb on the tail of the organism seems to glow. 
+:
+1 There must be a cave somewhere.|
+You peek through the metallic boards that kept you in the dark, surveying the surroundings. 
+:
+1  Now, let's actually explore.|
+
+
+You take a survey of your surroundings. 
+:
+1 The Moon?|
+No, the mountainous terrain doesn't fit the craters that decorate such rock. It's almost like a gray Mars. 
+On the dusty ground, you notice there's footprints. 
+More specifically, footprints that appear to match the organism that raided your final pack of food.
+Your machine starts to beep, indicating some sort of recognizable ore is nearby. 
+:
+1 Follow the footprints
+The footprints were rather small for an organism twice your size; they were similar to wine coloured horses from your home planet. The tiny footprints led to a cave, its gaping hole littered with luminescent ores.
+: 
+1 Scan the ores.|
+Hm, it seems like it doesn’t recognize it. You take a small chunk that lay on the side in your hands, using it to guide you in the dark.
+You grip your machine tightly as you walk in, ready to face what’s ahead. If the organism attacks you, you can aim for its huge eyeball. It’ll be easy, right?
+1 Continue walking.|
+The further down you go, the more you start to doubt your choices. Seriously, what were you thinking? You’re on an unknown planet, chasing after the thief that took your last portions of food. That organism could easily pull out some sci-fi movie move and say, telepathically control you.
+:
+1 Continue walking.|
+Who knows, these glowing ores aren’t even known to humankind so far. For all you know, it could be radioactive, slowly seeping into your bones and destroying your tissues...
+:
+1 Continue walking.|
+You hit something. It’s kind of scaly, a little soft and a tad bit…. Alive.
+:
+1 Look up.|
+A singular, lime green eye stares back at you. It’s ginormous, daunting and rather disturbing.
+:
+1 Poke its eye!|
+You try to move, but you can’t; your entire body is frozen in fear. 
+The chunk of ore in your hands tumble onto the ground. You curse internally as you watch it roll and hit the organism’s skinny legs. 
+You watch the organism’s eyes survey the crystal for a second. Then, it stretches its arm over to you, pointing downwards at the crystal.
+:
+1  Is it… asking for something?|
+It tilts its head a little, pointing at the crystal again. It raises its four fingers up before pointing back down at the crystal.
+:
+1 It wants 4 luminous crystals.|
+You slowly take a few steps back from the organism, making sure to never give your back to it. The organism’s eye follows you as you go, picking up smaller ores that were broken already.
+: 
+1 Place it in front of the organism.|
+The organism gives you a small thumbs up. The little light bulb on its tail wagged like a dog’s, as if it’s happy. It takes the four crystal ores and drops your food packet onto the ground.
+:
+1  It’s completely ransacked, but at least it’s not broken.|
+:
+1 For an organism with a huge eye, it sure left the freeze dried ice cream alone...|
+You wonder if it’s lactose intolerant. Laughing dryly at your own joke, you notice the organism beckoning you to follow it from afar.
+Up ahead, you see light, as if you’re back aboveground.
+|
+2 Find the source of ores
+You scan the dry terrain, watching the small screen and its radar go haywire. Something below you is making it go crazy, and you have no clue what it is.
+Frustrated, you head back to your rocket and search the rubble. You notice that the tool box is broken, a wrench is bent, and a few washers are gone.
+:
+1 Hey, at least that hammer is still intact, and there’s a chisel as well.|
+Hmm, maybe those chiseling lessons your parent taught paid off. You grab the broken can of machine oil from the rocket; it’s useless in the broken rocket, so you might as well use it for cold chiseling.
+You search around for an underground pathway, and you stumble upon a cave. It has footprints leading into its depths, and you pretend not to see it. The luminescent ores on the sides of the cave seem soft enough to mine.
+:
+1 Make do with the chisel and hammer.|
+You wet the chisel’s tip with a drop of machine oil before hammering the chisel at an angle.
+:
+1 Continue hitting it.|
+Bang, bang, bang. It’s kind of loud.
+:
+1 Continue hitting it.|
+The light of the ore reminds you of a disco ball.
+:
+1 Continue hitting it.|
+You sit back, bathing in satisfaction as a chunk of luminescent ore chips off its main body. 
+You suddenly notice a shadow looming over you, blocking the light.
+:
+1 Look up.|
+The organism that ransacked your food packet stands before you, pointing at the ore in your hands. Its large lime green eye bores into you as you hand it over, your hands shaking.
+:
+1 Hand it over.|
+Your fingers slip and the crystal hits the ground with a thud. You watch the organism take the ore and drop your food packet, making a similar thud sound on the ground.
+:
+1 Oh, it has an attitude.|
+The organism enters the cave, waving its tail to have you follow them.
+:
+1 Stranger danger, but there’s no way you’ll forget about the ore deposits underground.|
+:
+1 You’ll have to follow them for now.|
+|
+
+
+You follow the strange organism’s tail light into a brighter portion of the cave, with crystals, stalactites and stalagmites. Many more of the one eyed organisms litter the cave, with a flowstone in the middle.
+On top of the flowstone is a little white object, its glossy exterior standing out from the dark red cave walls.
+“You’re not hurt?”
+A robotic voice comes out of the object. You watch it fly up into the air and turn around.
+“I’m NOMIA.”
+You recall the back of the object being NOKIA, but you let it go. Maybe it’s even more indestructible than their phones.
+“The one who came to trade resources was REQUY, caps included.”
+REQUY, huh. It reminds you of a certain purple dinosaur back at home.
+:
+1 Nod your head.|
+“REQUY likes to trade items, and often they give you more than they ask for. Let it be food or water, they’ll handle it.”
+NOMIA hovers over to you, attempting to peer through the tinted helmet. It hovers and lands on the center of your palm, snuggling into it.
+“Extraterrestrial activity is rare here, so all the Questers here are confused.”
+:
+1 REQUY is a Quester?|
+“Yes, Questers are gentle and don’t mean any harm unless you lose their trust.”
+You sigh in relief and look over at the Questers. They’re all crowded behind rocks, stalagmites and even columns. They’re shy, but still curious. 
+:
+1 What about the ores?|
+“Lightores are sources of light and energy. They can be used to power many electronics, or robots like NOMIA!”
+Its little legs do a dance on your palm.
+: 
+1 How about the non-illuminating ores?|
+“Oh, you noticed them. I’m not sure what they are actually… My technology is quite a few years old if I dare say so.”
+:
+1 Well, I can try something.|
+You pick a small chunk of the ore and stuff it into a compartment of the machine, and some text pops up on the screen.
+“Aluminum seems to have the highest concentration. Could it be bauxite?”
+:
+1 It’s a useful element for spacecraft.|
+“I recall the Bayer process, a new technique used to purify such ores to get alumina.”
+:
+1 Bayer process?|
+“Right, it’s quite a new technique though.”
+You hold back on your comment.
+The Bayer process was invented in 1899, it’s been at least ten centuries...
+
+
+With Lightores, aluminum sheets and NOMIA by your side, you return to your space ship.
+However, there’s a little something by your space ship, something rather odd looking.
+:
+1 Squint your eyes.|
+You can already hear your parent scolding you for squinting.
+You notice a … mushroom. With insect wings. 
+It hops about your ship, kicks around rubble and explores the broken insides. NOMIA fumes at the sight of the mushroom-like organism.
+“Such disrespect!”
+Before you could ask any questions, NOMIA opens its top and blasts the organism with a bright beam.
+:
+1 Close your eyes from the brightness and shield your eyes.|
+“Such rudeness is intolerable! No one invades another’s privacy here.”
+You glance over at NOMIA, which is back to normal. 
+:
+1 Did you just char that mushroom-being?|
+“It’s edible. They eat dust and purify the air. Though, it’s a little useless above ground.”
+You hesitate.
+“I heard from the Questers that it tastes like… chicken.”
+:
+1 You can taste things?|
+“No, but my creator has given me data on such.”
+:
+1 Then how about this planet?|
+NOMIA falls silent. 
+:
+1 How did I arrive here?|
+NOMIA floats into your abandoned ship, pushing a few papers out.
+Some pages were torn and shredded from the crash, but a few others were intact. You want to point out the hypocrisy of the robot, but your anger doesn’t match the level of confusion you’re at.
+“The wormhole theory you’ve been researching about is true. That’s how you arrived on our planet.”
+:
+1 Is there a way back?|
+NOMIA spins around, searching its database.
+You stand in disbelief, looking at the charred mushroom organism. Your stomach growls and you sit down, holding it in your hands. 
+NOMIA isn’t telling you how they gained knowledge about this planet, despite claiming to be made on Earth. 
+Your head hurts as you think more.
+:
+1 Head back into the caves.|
+As you walk back into the lit up clearing, Questers gather around you. Confused, they point towards a steep rocky path. You recall NOMIA calling it a water cave, where oxygen is oddly abundant. 
+:
+1 Head over to the water cave, famished.|
+You take a seat by the waters and take off your helmet, breathing in the musky, damp air. It’s better than nothing, but only if you were able to refill your oxygen tank with this oxygen.
+:
+1 Bite into the charred mushroom being.|
+It’s oddly soft and chewy. It’s not exactly stringy like chicken, but more of a beef or pork texture. It has a rather dusty taste to it, probably thanks to the dust NOMIA claimed they eat. 
+:
+1 Continue eating the charred mushroom being.|
+The mushroom-like cap indeed tastes like a mushroom. You wonder if your parent will scold you for eating an unidentified species of mushroom.
+:
+1 Finish eating the charred mushroom being.|
+You sit back, sighing as you look down at your hands. It lacked bones, and the only inedible (or rather, unappealing) parts were its limbs and head. 
+:
+1 I’d give it a 1 / 5.|
+2 I’d give it a 2 / 5.|
+3 I’d give it a 3 / 5.|
+4 I’d give it a 4 / 5.|
+5 I’d give it a 5 / 5.|
+You notice NOMIA at the entrance of the cave, hesitating.
+“I’m sorry for being a hypocrite.”
+You take a drink from the water pool, ignoring the robot.
+“I’ve only learned more about this planet through the Lightores collected here. They mimic historical books, recording events of this planet.” 
+You wipe your mouth and put on your helmet.
+:
+1 How do I leave this planet?|
+NOMIA hesitates, resting itself on the ground.
+:
+1 If you’re not going to answer, then don’t.|
+“If you get enough resources and repair the spaceship, I will guide you home.”
+:
+1 Do you mean it?|
+“NOMIA is a robot made for humanity. No human should be labelled as missing in action under NOMIA’s care.”
+You hold out your pinky. It’s a childish thing to do for someone your age, but promises are important.
+:
+1 Pinky promise?|
+“Pinky promise.”
+NOMIA gently butts its head against your gloved pinky.
+Your stomach growls again, breaking the silence.
+:
+1 Let’s go blast more mushrooms, shall we?|
+
+
+“According to my calculations, the wormhole should be able to transport you back to the Milky Way Galaxy in 36 hours.” 
+You haul the resources you’ve farmed to the broken spaceship. With NOMIA’s help, you’ve managed to patch much of the rocket together — only the wiring and the oxygen tank needs finishing touches. 
+Much of the aircraft is lit by Lightores, but you’re determined to fix all wiring to recover the spaceship as best as possible. 
+:
+1 Start by mending wires.|
+NOMIA’s face literally lights up and acts as a flashlight as you mend the wires, quietly helping you.
+You haven’t forgotten about the promise — NOMIA will guide you home. 
+:
+1 Pat NOMIA on the head.
+“Should I dim the lighting?”
+:
+1 That’s just how some people say thanks.|
+“Oh, okay. You’re welcome! This is merely part of my duty as NOMIA.”
+You smile at the robot before continuing with your work. 
+|
+2 Reach over, but hesitate.|
+The wiring finishes rather smoothly. Lastly, the oxygen tank. 
+It will be tricky to fix it, since you have to haul a full tank from the water pool up to the rocket. You thank the oxygen extraction technology of large oxygen tanks. 
+NOMIA follows you down to the water pool. Last time you were here, you were impatient with the robot, demanding answers to how you landed here. This time, you simply wish to put such questions aside.
+:
+1 Fill the tank with oxygen.|
+You watch the adapter on the tank work its magic as the pressure gauge slowly rises away from the red region. NOMIA sits on your hand in silence, enjoying the still darkness with you.
+It’s at times like these, where you begin to feel yourself melt into your surroundings.
+Back at your home planet, you couldn’t catch a break. From day one of your post secondary education to your first day on the space exploration team, you haven’t had a time to think. There was either an assignment due in an hour, or a training scheduled up until the early mornings of the next day.
+:
+1 You take a deep breath, holding onto your thoughts.
+It wasn’t like you hated your job. This was your dream: find a new planet, explore it and see what it has to give. 
+And yet when you sit in this water cave, alone with a sleeping NOMIA, you feel at ease. 
+Although the air’s not as fresh as it is back at home, you feel like it’s easier to breathe here.
+|
+2 Check the tank.|
+The valve has neared its max. You turn off the adapter and tighten the valve. You gently pocket NOMIA and put on your helmet. NOMIA can catch a break.
+:
+1 pocket the adapter, and start hauling the tank up.|
+You can’t help but wonder about your family back at home.
+Will your parents be waiting for you anxiously, ready to embrace you in their arms when you land home? 
+Will you finally be able to return back to land without a lack of oxygen?
+:
+1 Walk through the Quester’s gathering.|
+2 Continue walking through the stalagmites.{increased chance of getting to bad ending}|
+You shiver at the sudden thoughts of responsibilities. Here, on this barren land, all it mattered was survival. NOMIA, REQUY and the mushroom beings were all that you needed to worry about. If your oxygen tank ran out of energy, at least the central one is capable of refilling itself. 
+Speaking of the central oxygen tank...
+:
+1 Take a break.|
+2 Push on.{increased chance of getting bad ending}|
+You sigh, looking at the rocket that stood infront of you. 
+This is your sole link to home, along with the various pictures and memos you have. Your blood sweat and tears have been put into this craft, and now you're almost done it. 
+Yet you have to be so conflicting. 
+Would going home really be the best?
+:
+1  Do I really want to face my responsibilities?|
+NOMIA pops out of your pocket and flies around your lazily. 
+"Responsibilities exist everywhere. What may seem like a fresh start now will soon be stale as well. NOMIA has been here for ages, every day passes the same."
+:
+1 They're different. I love what I'm doing, but I don't want to be pushed in a cycle of work.|
+NOMIA falls silent for a second. 
+"NOKIA once said that work is inevitable. Something along the lines of 'carrying on is a duty of our own'. NOMIA wasn't listening."
+You laugh a little. Although what the robot said didn't effectively convince you, you decide it's best to keep your thoughts to yourself. Subconsciously, you carry on. 
+
+
+
+
+
+
+
+
+
+
+
+
 an event {water: +2, gif: 1}
 another one
 this is a choice {energy: -1}:
