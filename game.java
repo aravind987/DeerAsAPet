@@ -31,18 +31,35 @@ class Run
         {
             public void paint(Graphics g)
             {
-                session.next();
                 session.draw(g, this.getSize());
             }
         };
         display.setSize(f.getSize());
+        JFrame fr = new JFrame("History");
+        fr.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        fr.setBounds((int)(0.35 * WIDTH),
+                     (int)(0.35 * HEIGHT),
+                     (int)(0.30 * WIDTH),
+                     (int)(0.30 * HEIGHT));
+        JTextArea area = new JTextArea();
+        area.setBounds(0, 0, fr.getWidth(), fr.getHeight());
+        area.setEditable(false);
+        area.setBackground(Color.WHITE);
+        area.addComponentListener(new ComponentAdapter()
+        {
+            public void componentResized(ComponentEvent e)
+            {
+                area.setFont(new Font("Helevetica", Font.PLAIN, (int)(0.019 * (area.getHeight() + area.getWidth()))));
+            }
+        });
+        fr.add(new JScrollPane(area));
         f.addKeyListener(new KeyAdapter()
         {
             public void keyPressed(KeyEvent e)
             {
                 if(session.request.isAlive())
                 {
-                    if(e.getKeyCode() == 10)
+                    if(e.getKeyCode() == 10 || e.getKeyCode() == 32)
                     {
                         session.selected = true;
                     }
@@ -57,7 +74,15 @@ class Run
                         session.considering = (int)Math.min(session.considering, ((Choice)session.current).getOptionDescriptions().length - 1);
                     }
                 }
-                else if(e.getKeyCode() == 10 && !session.state.transitioning)session.toggle();
+                else if(!session.state.transitioning)
+                {
+                    if(e.getKeyCode() == 10 || e.getKeyCode() == 32)
+                    {
+                        session.next();
+                        area.setText(session.history);
+                    }
+                    else if(e.getKeyCode() == 72)fr.setVisible(true);
+                }
             }
         });
         display.setDoubleBuffered(true);
@@ -86,44 +111,47 @@ class Game
     public static final Image[] media = {new ImageIcon(Run.class.getResource("sample.gif")).getImage(),
                                          new ImageIcon(Run.class.getResource("another.gif")).getImage()};
     public String playerName;
-    public GameEvent history, current, history_curr;
+    public GameEvent history_curr, current;
+    public ArrayList<GameEvent> branches;
+    public String history;
     private GameEvent gamedata;
     public State state;
     public int considering;
-    public boolean on_standby, ended, selected;
+    public boolean ended, selected;
     public Thread request;
     public Game(String playerName, JFrame frame, BufferedReader dataStream) throws Exception
     {
         this.playerName = playerName;
-        this.history = null;
-        this.current = null;
+        this.history = "";
+        this.branches = new ArrayList<GameEvent>();
         this.history_curr = null;
+        this.current = null;
         String line = dataStream.readLine().trim();
         int stateChangePosition = line.indexOf(Game.STATE_CHANGE_SYMBOL);
         if(stateChangePosition == -1) this.gamedata = new GameEvent(line, new int[State.STATE_SIZE]);
         else this.gamedata = new GameEvent(line.substring(0, stateChangePosition).trim(), State.parse(line.substring(stateChangePosition + 1, line.length() - 1)));
         this.state = new State(frame);
-        this.on_standby = true;
         this.ended = false;
         this.selected = false;
         this.considering = 0;
         this.request = new Thread();
         getGameData(dataStream, this.gamedata);
         dataStream.close();
-        //printGameData(this.gamedata, "");
+        printGameData(this.gamedata, "");  // comment
     }
     private static void getGameData(BufferedReader br, GameEvent root) throws Exception
     {
         String line = null;
-        boolean next_option = false;
         while((line = br.readLine()) != null)
         {
-            if(next_option && line.length() > 1)
+            line = line.trim();
+            if(line.equals(""))continue;
+            if(Character.isDigit(line.charAt(0)))
             {
-                if(line.endsWith(END_SYMBOL)){((Choice)root).addOption(line.trim().substring(1, line.length() - 1).trim());}
+                if(line.endsWith(END_SYMBOL))((Choice)root).addOption(line.substring(1, line.length() - 1).trim());
                 else
                 {
-                    ((Choice)root).addOption(line.trim().substring(1).trim());
+                    ((Choice)root).addOption(line.substring(1).trim());
                     getGameData(br, ((Choice)root).getLastOption());
                 }
             }
@@ -131,7 +159,7 @@ class Game
             {
                 if(line.length() > 1)
                 {
-                    line = line.trim().substring(0, line.length() - 1).trim();
+                    line = line.substring(0, line.length() - 1).trim();
                     int stateChangePosition = line.indexOf(Game.STATE_CHANGE_SYMBOL);
                     if(stateChangePosition == -1) root.next = new GameEvent(line);
                     else root.next = new GameEvent(line.substring(0, stateChangePosition).trim(), State.parse(line.substring(stateChangePosition + 1, line.length() - 1)));
@@ -142,19 +170,16 @@ class Game
             {
                 if(line.endsWith(START_SYMBOL))
                 {
-                    line = line.trim().substring(0, line.length() - 1).trim();
+                    line = line.substring(0, line.length() - 1).trim();
                     int stateChangePosition = line.indexOf(Game.STATE_CHANGE_SYMBOL);
                     if(stateChangePosition == -1) root.next = new Choice(line);
                     else root.next = new Choice(line.substring(0, stateChangePosition).trim(), State.parse(line.substring(stateChangePosition + 1, line.length() - 1)));
-                    next_option = true;
                 }
                 else
                 {
-                    line = line.trim();
                     int stateChangePosition = line.indexOf(Game.STATE_CHANGE_SYMBOL);
                     if(stateChangePosition == -1) root.next = new GameEvent(line);
                     else root.next = new GameEvent(line.substring(0, stateChangePosition).trim(), State.parse(line.substring(stateChangePosition + 1, line.length() - 1)));
-                    next_option = false;
                 }
                 root = root.next;
             }
@@ -162,63 +187,76 @@ class Game
     }
     public void next()
     {
-        if(on_standby || ended || request.isAlive()) return;
+        if(ended || request.isAlive()) return;
         if(current == null)
         {
             this.state.applyChanges(gamedata.stateChange);
             current = gamedata;
-            this.toggle();
-            return;
-        }
-        if(history == null)
-        {
-            history = new GameEvent(current.eventDescripton, current.stateChange);
-            history_curr = history;
         }
         else
         {
-            history_curr.next = new GameEvent(current.eventDescripton, current.stateChange);
-            history_curr = history_curr.next;
-        }
-        if(current instanceof Choice)
-        {
-            this.request = new Thread(new Runnable(){
-                public void run()
+            if(history_curr != null && history_curr instanceof Choice) history += "Choice event: ";
+            else if(current instanceof Choice) history += "Branch event: ";
+            else history += "Game event: ";
+            for(int i = 0; i < this.branches.size(); i++) history += Game.PRINT_DELIMITER;
+            history += current.eventDescripton + ". Effects: " + State.getLightChangeDescription(current.stateChange) + "\n";
+            history_curr = current;
+            if(current instanceof Choice)
+            {
+                this.request = new Thread(new Runnable(){
+                    public void run()
+                    {
+                        while(!selected){try{Thread.sleep(1);}catch(InterruptedException e){}}
+                        branches.add(current);
+                        current = ((Choice)current).select(considering, state);
+                        selected = false;
+                        considering = 0;
+                    }
+                });
+                this.request.start();
+            }
+            else
+            {
+                if(current.next == null)
                 {
-                    while(!selected){try{Thread.sleep(1);}catch(InterruptedException e){}}
-                    current = ((Choice)current).select(considering - 1, state);
-                    selected = false;
+                    if(branches.size() == 0)
+                    {
+                        ended = true;
+                        return;
+                    }
+                    current = branches.remove(branches.size()-1);
                 }
-            });
-            this.request.start();
+                this.state.applyChanges(current.next.stateChange);
+                current = current.next;
+            }
         }
-        else
-        {
-            if(current.next == null) ended = true;
-            else this.state.applyChanges(current.next.stateChange);
-            current = current.next;
-        }
-        this.toggle();
+        this.checkGameEnded();
+        if(current.eventDescripton.equals(""))this.next();
+    }
+    private void checkGameEnded()
+    {
+        if(!this.state.reachedEnd()) return;
+        this.state.setGameOver();
+        this.ended = true;
     }
     private static void printGameData(GameEvent event, String delim)
     {
         while(event != null)
         {
-            System.out.println(delim + event.eventDescripton + " -> " + State.getChangeDescription(event.stateChange));
+            System.out.println(delim + (event.eventDescripton == "" ? "<empty>" : event.eventDescripton) + " -> " + State.getChangeDescription(event.stateChange));
             if(event instanceof Choice)
             {
                 String[] opts = ((Choice)event).getOptionDescriptions();
                 for(int i = 0; i < opts.length; i++)
                 {
-                    System.out.println(delim + (i+1) + ") " + opts[i] + " -> " + State.getChangeDescription(((Choice)event).getStateChange(i)));
-                    printGameData(((Choice)event).getOption(i-1).next, delim + PRINT_DELIMITER);
+                    System.out.println(delim + (i+1) + ") " + (opts[i] == "" ? "<empty>" : opts[i]) + " -> " + State.getChangeDescription(((Choice)event).stateChanges.get(i)));
+                    printGameData(((Choice)event).options.get(i).next, delim + PRINT_DELIMITER);
                 }
-                return;
             }
-            else event = event.next;
+            event = event.next;
         }
     }
-    private static int getFittableUpto(String str, int maxLen)
+    public static int getFittableUpto(String str, int maxLen)
     {
         if(str.length() <= maxLen) return str.length();
         int i = maxLen - 1;
@@ -270,7 +308,7 @@ class Game
         }
         else
         {
-            String text = "Welcome " + this.playerName + " ! Use Enter and UP / DOWN arrow keys !";
+            String text = "Welcome " + this.playerName + " ! Use ENTER / SPACEBAR to continue, UP / DOWN arrow keys to navigate and H to see history !";
             if(this.ended) text = "Thanks for playing !";
             else if(this.state.transitioning && this.history_curr != null) text = this.history_curr.eventDescripton;
             else if(!this.state.transitioning && this.current != null) text = this.current.eventDescripton;
@@ -289,12 +327,11 @@ class Game
         g.setColor(this.state.overlay);
         g.fillRect(0, 0, (int)d.getWidth(), (int)d.getHeight());
     }
-    public void toggle(){this.on_standby = !this.on_standby;}
 }
 class State
 {
     public static final int MAX_BAR_VALUE = 100, STATE_SIZE = 4;
-    private int water_bar_value, food_bar_value, energy_bar_value;
+    public int water_bar_value, food_bar_value, energy_bar_value;
     public int gif;
     private JFrame frame;
     private boolean slow_base_change;
@@ -367,6 +404,13 @@ class State
             }
         }).start();
     }
+    public boolean reachedEnd()
+    {
+        // sample, need updating.
+        return this.water_bar_value == 0 || this.water_bar_value == MAX_BAR_VALUE ||
+               this.food_bar_value == 0 || this.food_bar_value == MAX_BAR_VALUE ||
+               this.energy_bar_value== 0 || this.energy_bar_value == MAX_BAR_VALUE;
+    }
     public void applyChanges(int[] values)
     {
         transitioning = true;
@@ -413,6 +457,10 @@ class State
         this.food_bar_value = Math.min(MAX_BAR_VALUE, Math.max(0, food_bar_value));
         this.energy_bar_value = Math.min(MAX_BAR_VALUE, Math.max(0, energy_bar_value));
     }
+    public void setGameOver()
+    {
+        // check and set
+    }
     public static int[] parse(String s)
     {
         int[] values = new int[STATE_SIZE];
@@ -443,6 +491,14 @@ class State
         desc += "food: " + (values[1] < 0 ? "" : "+") + values[1] + ", ";
         desc += "energy: " + (values[2] < 0 ? "" : "+") + values[2] + ", ";
         desc += "gif: " + values[3];
+        return desc;
+    }
+    public static String getLightChangeDescription(int[] values)
+    {
+        String desc = "";
+        desc += "water: " + (values[0] < 0 ? "" : "+") + values[0] + ", ";
+        desc += "food: " + (values[1] < 0 ? "" : "+") + values[1] + ", ";
+        desc += "energy: " + (values[2] < 0 ? "" : "+") + values[2];
         return desc;
     }
     public void toggle_base_change(){this.slow_base_change = !this.slow_base_change;}
@@ -509,29 +565,22 @@ class Choice extends GameEvent
             stateChangePosition = option.length();
         }
         else this.stateChanges.add(State.parse(option.substring(stateChangePosition + 1, option.length() - 1)));
-        if(this.next == null){this.next = new GameEvent(option.substring(0, stateChangePosition).trim());}
-        else{this.options.add(new GameEvent(option.substring(0, stateChangePosition).trim()));}
-    }
-    public GameEvent getOption(int option)
-    {
-        if(option == -1) return this.next;
-        return this.options.get(option);
-    }
-    public int[] getStateChange(int option)
-    {
-        if(option == -1) return this.stateChange;
-        return this.stateChanges.get(option);
+        this.options.add(new GameEvent(option.substring(0, stateChangePosition).trim()));
     }
     public GameEvent select(int option, State s)
     {
-        s.applyChanges(this.getStateChange(option));
-        return this.getOption(option);
+        s.applyChanges(this.stateChanges.get(option));
+        return this.options.get(option);
     }
     public String[] getOptionDescriptions()
     {
-        String[] options = new String[this.options.size() + 1];
-        for(int i = 0; i <= this.options.size(); i++){options[i] = this.getOption(i-1).eventDescripton;}
+        String[] options = new String[this.options.size()];
+        for(int i = 0; i < this.options.size(); i++){options[i] = this.options.get(i).eventDescripton;}
         return options;
     }
-    public GameEvent getLastOption(){return this.getOption(this.options.size() - 1);}
+    public GameEvent getLastOption()
+    {
+        if(this.options.size() == 0) return null;
+        return this.options.get(this.options.size() - 1);
+    }
 }
