@@ -1,0 +1,20 @@
+You went to repair the spaceship for a while with NOMIA.
+During the entire time, you felt your head hurt and the world getting a little hazy. However, you brushed it off and assumed it was because of the rather unenjoyable dinner you had last night.
+You kept on pushing through, but now as you leave the spaceship, you stumble over its steps.
+You land on the ground with a thud.
+:
+1 Try to get up.|
+It’s not working, but you manage to reach your hand out to NOMIA.
+:
+1 NOMIA...|
+The robot looks back at you.
+“Are you hurt? Hungry? Thirsty? Tired?”
+Its words start blending together and you blink your heavy eyelids.
+:
+1 I don’t know what you’re saying...|
+You close your eyes, resting your head on the dusty terrain.
+:
+1 NOMIA…. I can’t keep going.|
+:
+1 I’m tired.|
+

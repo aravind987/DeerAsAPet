@@ -1,0 +1,21 @@
+You hold your crossbow tightly, aiming it at the dark figure.
+You pull the trigger and you hear it yelp.
+:
+1 Hold on, when did these mushroom beings make sounds?|
+You kneel down and approach the figure. The dark lighting of the cave does not help your situation, and NOMIA was resting back in the water cave.
+You toss a Lightore at it, and the rock bounces off of its body. It was … scaly.
+Confused, you take a closer look.
+The yellow light of a Quester’s tail light floods the cave, causing you to shield your eyes.
+:
+1 REQUY? What are you doing here?|
+The Quester glares at you, pulling the bolt you shot at it out of its side. Yellow liquid oozes from its cuts, but the scales are already healing itself.
+:
+1 Look, I didn’t know it was you!|
+You point the crossbow at REQUY, which angers it even more. 
+The Quester charges at you, opening its mouth.
+:
+1 Pull the trigger of the crossbow!|
+You pull the trigger only to realize you used your last bolt in your cartridge.
+:
+1 Maybe hunting aboveground was a better idea...|
+

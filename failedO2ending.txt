@@ -9,6 +9,26 @@ In a frantic hurry, you rush to find your helmet.
 You grab your helmet and stuff it on, opening the spaceship's door. You have to tell the robot to make a new aluminum tank. 
 You notice a white blob pop up from the far end of the field, exiting the cave. 
 You hobble out and realize you forgot your oxygen tanks. 
-Everything's suddenly hot, tight and even … tiring. 
+Everything's suddenly hot, tight and even … tiring.
+:
+1 NO... MIA...|
+You collapse onto the dusty terrain as you extend your hand out to NOMIA.
+You were so close to making it home, getting to feel the comfort of your parents' cooking and training new interns.
+:
+1 Try to breathe again.|
+You want to go back.
+You want to reunite with your family.
+:
+1  It hurts to breathe, your lungs are screaming.|
+The responsibilities may be daunting, the lack of time to rest is draining… yet that’s all for you to live your dream in the future.
+:
+1 Try to breathe again.|
+NOMIA…. I’m sorry.
+:
+Break the promise.|
+
+
+
+
 
 

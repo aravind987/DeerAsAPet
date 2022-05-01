@@ -1,0 +1,99 @@
+You try to start the central control panel, confused as to why it’s not working.
+You collected enough Lightores, how come this ship isn’t starting?
+NOMIA hovers over your shoulder, a light mechanical sound coming from its body.
+“You didn’t have enough Lightores, did you?”
+:
+1 I mined enough, I’m sure of it.|
+“Amount of Lightores needed for the central control panel is 4.”
+:
+1 4? Didn’t you say 3?|
+“Four. F-O-U-R.”
+You sigh in frustration. You don’t have enough time to go back and mine another Lightore.
+“There are two options you can go from here.”
+NOMIA lands on the broken pilot seat, opening its top.
+A brilliant, teal-blue core shines in front of you, the detailed mechanics fascinating to see. For a technology dating back to the late 1800’s, it’s impressive.
+“This core has enough power to bring you home. It should be just enough.”
+“Or, you stay here, with NOMIA and Questers until the next wormhole.”
+:
+1 And when will that be?|
+“NOMIA has yet to calculate that. Perhaps another ten years? Hundred?”
+:
+1 How long have I been here in Earth days then?|
+“At least a year.”
+A year? It felt like it’s only been a day or two.
+“Which one will you choose?” :
+1 NOMIA’s core.
+NOMIA closes its lid and floats up to your eye level.
+“Okay, that’s fine with NOMIA.”
+It gently bumps your pinky again, reminding you of the promise you two made.
+“NOMIA will ensure you arrive home safely.”
+You ball your hands into fists.
+:
+1 NOMIA, I’m sorry.|
+“Astronaught, right?”
+You pause. You have your friends call you that like a nickname of some sorts.
+“Astronaught, it was great meeting you. I have a request though.”
+:
+1 What is it?|
+“Only take my core. Don’t bring anything else along.”
+:
+1 Leave it for the Questers?|
+“Yes.”
+You look at the creatures that crowded the cave. They seem to be waiting for NOMIA.
+:
+1 Are you sure?|
+The robot opens its lid and remains silent.
+:
+1 Take NOMIA’s core.|
+You step out of the spaceship, holding NOMIA in your hands. As much as you understand the harms of ripping a battery source out of its place, you do it.
+Sparks fly temporarily and you close NOMIA’s lid, looking back at the robot.
+The glossy exterior of the robot reflects some of the harsh light from a nearby star. The LED-type of panel is now dim, its eyes missing.
+You gently place the robot on the ground, patting its head a final time before heading into the spaceship.
+:
+1 Insert the core.|
+Your spaceship powers up and the control panels light up. The auto pilot to the wormhole has been set by NOMIA previously, so you get into your seat and start the countdown.
+10…
+9…
+8…
+7…
+6…
+5…
+4…
+3…
+2…
+1…
+You close your eyes, fighting back the heavy weight put on your chest. You trained yourself for this.
+:
+1 Remember your hard work and contributions.|
+You begged for your superiors to let them give you a second chance at astronaut training.
+“All will be naught if you don't try again,” you recall the robot saying back at the water cave.
+You smile internally to yourself.
+:
+1 Thank you, NOMIA.
+|
+2 Stay here.
+NOMIA stops for a second.
+“Didn’t you want to head back?”
+Despite all the troubling work at home, you still wanted to head back. But now that you think of it, wouldn’t staying here be better?
+You have NOMIA and the Questers as your friends. No matter how foreign you were to them, they still accepted you with open arms. 
+They still considered you as a family.
+:
+1 I like it here.|
+“Better than your home planet?”
+You look at the control panel of your spaceship. You can still hear your parent exclaiming in joy when they see it, smiling as they tell you you’re finally living your dream. You feel the little shoulder pat your superior gave you when you told them you’re out on your first mission. 
+:
+1 Yes.|
+You look away. Those who brought little joys to your life didn’t seem to matter to you as much as this carefree life you have here did.
+Here, you could keep your head clear and not lose sleep over the most trivial things. You didn’t have to argue with Questers (nor did you want to), and you’re sure to make amends with NOMIA soon.
+“But how about your promise?”
+:
+1 Drop it.|
+“NOMIA will be sure to help you in another way.”
+You follow the robot out of the spaceship, glancing down at your oxygen tank.
+It’s almost used up, but you could probably modify the adapter with NOMIA’s ore purification technology. Come to think of it, how was this machine even built in the late 1800’s?
+You shake your head as you head back into the cave.
+:
+1 Some questions are meant to be left unanswered.|
+|
+
+
