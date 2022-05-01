@@ -1,7 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.*;
 import java.util.*;
 import java.io.*;
 class Run
@@ -16,18 +15,18 @@ class Run
         HEIGHT = (int)d.getHeight();
         String name = JOptionPane.showInputDialog(null, "What's your name !", "Dialog", JOptionPane.QUESTION_MESSAGE);
         if(name == null) System.exit(0);
-        try{session = new Game(name, new BufferedReader(new FileReader(new File("gamedata.txt"))));}
+        JFrame f = new JFrame("Adventure Story !");
+        try{session = new Game(name, f, new BufferedReader(new FileReader(new File("gamedata.txt"))));}
         catch(Exception e)
         {
             System.err.println("Game initialization failed : " + e.getMessage());
             e.printStackTrace();
             System.exit(1);
         }
-        JFrame f = new JFrame("Adventure Story !");
-        f.setBounds(Math.max((WIDTH - (int)(1.05 * Game.media[session.state.gif].getWidth(null)))/2, 0),
-                    Math.max((HEIGHT - (int)(1.05 * Game.media[session.state.gif].getHeight(null)))/2, 0),
-                    (int)(1.1 * Game.media[session.state.gif].getWidth(null)),
-                    (int)(1.1 * Game.media[session.state.gif].getHeight(null)));
+        f.setBounds(Math.max((WIDTH - (int)(1.04 * Game.media[session.state.gif].getWidth(null)))/2, 0),
+                    Math.max((HEIGHT - (int)(1.08 * Game.media[session.state.gif].getHeight(null)))/2, 0),
+                    Math.min((int)(1.08 * Game.media[session.state.gif].getWidth(null)), WIDTH),
+                    Math.min((int)(1.16 * Game.media[session.state.gif].getHeight(null)), HEIGHT));
         display = new JPanel()
         {
             public void paint(Graphics g)
@@ -36,7 +35,7 @@ class Run
                 session.draw(g, this.getSize());
             }
         };
-        display.setSize(WIDTH, HEIGHT);
+        display.setSize(f.getSize());
         f.addKeyListener(new KeyAdapter()
         {
             public void keyPressed(KeyEvent e)
@@ -67,13 +66,14 @@ class Game
 {
     public static final char STATE_CHANGE_SYMBOL = '{', STATE_CHANGE_SEPERATOR = ':';
     public static final String PRINT_DELIMITER = "  ", STATE_CHANGE_DELIMITER = ",", START_SYMBOL = ":", END_SYMBOL = "|";
-    public static final Image[] media = {new ImageIcon(Run.class.getResource("sample.gif")).getImage()};
+    public static final Image[] media = {new ImageIcon(Run.class.getResource("sample.gif")).getImage(),
+                                         new ImageIcon(Run.class.getResource("another.gif")).getImage()};
     private String playerName;
     private GameEvent history, current, history_curr;
     private GameEvent gamedata;
     public State state;
     private boolean on_standby, ended;
-    public Game(String playerName, BufferedReader dataStream) throws Exception
+    public Game(String playerName, JFrame frame, BufferedReader dataStream) throws Exception
     {
         this.playerName = playerName;
         this.history = null;
@@ -83,7 +83,7 @@ class Game
         int stateChangePosition = line.indexOf(Game.STATE_CHANGE_SYMBOL);
         if(stateChangePosition == -1) this.gamedata = new GameEvent(line, new int[State.STATE_SIZE]);
         else this.gamedata = new GameEvent(line.substring(0, stateChangePosition).trim(), State.parse(line.substring(stateChangePosition + 1, line.length() - 1)));
-        this.state = new State();
+        this.state = new State(frame);
         this.on_standby = true;
         this.ended = false;
         getGameData(dataStream, this.gamedata);
@@ -111,7 +111,7 @@ class Game
                 {
                     line = line.trim().substring(0, line.length() - 1).trim();
                     int stateChangePosition = line.indexOf(Game.STATE_CHANGE_SYMBOL);
-                    if(stateChangePosition == -1) root.next = new GameEvent(line, new int[State.STATE_SIZE]);
+                    if(stateChangePosition == -1) root.next = new GameEvent(line);
                     else root.next = new GameEvent(line.substring(0, stateChangePosition).trim(), State.parse(line.substring(stateChangePosition + 1, line.length() - 1)));
                 }
                 return;
@@ -122,7 +122,7 @@ class Game
                 {
                     line = line.trim().substring(0, line.length() - 1).trim();
                     int stateChangePosition = line.indexOf(Game.STATE_CHANGE_SYMBOL);
-                    if(stateChangePosition == -1) root.next = new Choice(line, new int[State.STATE_SIZE]);
+                    if(stateChangePosition == -1) root.next = new Choice(line);
                     else root.next = new Choice(line.substring(0, stateChangePosition).trim(), State.parse(line.substring(stateChangePosition + 1, line.length() - 1)));
                     next_option = true;
                 }
@@ -130,7 +130,7 @@ class Game
                 {
                     line = line.trim();
                     int stateChangePosition = line.indexOf(Game.STATE_CHANGE_SYMBOL);
-                    if(stateChangePosition == -1) root.next = new GameEvent(line, new int[State.STATE_SIZE]);
+                    if(stateChangePosition == -1) root.next = new GameEvent(line);
                     else root.next = new GameEvent(line.substring(0, stateChangePosition).trim(), State.parse(line.substring(stateChangePosition + 1, line.length() - 1)));
                     next_option = false;
                 }
@@ -144,6 +144,7 @@ class Game
         if(current == null)
         {
             current = gamedata;
+            this.state.applyChanges(current.stateChange);
             return;
         }
         if(history == null)
@@ -160,8 +161,8 @@ class Game
         else
         {
             current = current.next;
-            this.state.applyChanges(current.stateChange);
             if(current == null) ended = true;
+            else this.state.applyChanges(current.stateChange);
         }
         this.toggle();
     }
@@ -232,9 +233,10 @@ class State
     public static final int MAX_BAR_VALUE = 100, STATE_SIZE = 4;
     private int water_bar_value, food_bar_value, energy_bar_value;
     public int gif;
+    private JFrame frame;
     private boolean slow_base_change;
     public Color base, overlay;
-    public State()
+    public State(JFrame frame)
     {
         this.water_bar_value = (int)(0.75 * MAX_BAR_VALUE);
         this.food_bar_value = (int)(0.75 * MAX_BAR_VALUE);
@@ -243,6 +245,7 @@ class State
         this.overlay = new Color(0, 0, 0, 0);
         this.slow_base_change = false;
         this.gif = 0;
+        this.frame = frame;
         new Thread(new Runnable(){
             public void run()
             {
@@ -291,6 +294,12 @@ class State
                     catch(InterruptedException e){}
                 }
                 gif = new_gif;
+                Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+                int WIDTH = (int)d.getWidth(), HEIGHT = (int)d.getHeight();
+                frame.setBounds(Math.max((WIDTH - (int)(1.04 * Game.media[gif].getWidth(null)))/2, 0),
+                                Math.max((HEIGHT - (int)(1.08 * Game.media[gif].getHeight(null)))/2, 0),
+                                Math.min((int)(1.08 * Game.media[gif].getWidth(null)), WIDTH),
+                                Math.min((int)(1.16 * Game.media[gif].getHeight(null)), HEIGHT));
                 while(alpha > 0)
                 {
                     alpha--;

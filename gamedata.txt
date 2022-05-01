@@ -1,4 +1,4 @@
-an event {water: +2}
+an event {water: +2, gif: 1}
 another one
 this is a choice {energy: -1}:
 1 option 1 {water: +1, food: -1, energy: 0}
