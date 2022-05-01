@@ -40,7 +40,24 @@ class Run
         {
             public void keyPressed(KeyEvent e)
             {
-                if(e.getKeyCode() == 32)session.toggle();
+                if(session.request.isAlive())
+                {
+                    if(e.getKeyCode() == 10)
+                    {
+                        session.selected = true;
+                    }
+                    else if(e.getKeyCode() == 38)
+                    {
+                        session.considering -= 1;
+                        session.considering = (int)Math.max(0, session.considering);
+                    }
+                    else if(e.getKeyCode() == 40)
+                    {
+                        session.considering += 1;
+                        session.considering = (int)Math.min(session.considering, ((Choice)session.current).getOptionDescriptions().length - 1);
+                    }
+                }
+                else if(e.getKeyCode() == 10 && !session.state.transitioning)session.toggle();
             }
         });
         display.setDoubleBuffered(true);
@@ -66,13 +83,15 @@ class Game
 {
     public static final char STATE_CHANGE_SYMBOL = '{', STATE_CHANGE_SEPERATOR = ':';
     public static final String PRINT_DELIMITER = "  ", STATE_CHANGE_DELIMITER = ",", START_SYMBOL = ":", END_SYMBOL = "|";
-    public static final Image[] media = {new ImageIcon(Run.class.getResource("Sample.gif")).getImage(),
-                                         new ImageIcon(Run.class.getResource("Another.gif")).getImage()};
-    private String playerName;
-    private GameEvent history, current, history_curr;
+    public static final Image[] media = {new ImageIcon(Run.class.getResource("sample.gif")).getImage(),
+                                         new ImageIcon(Run.class.getResource("another.gif")).getImage()};
+    public String playerName;
+    public GameEvent history, current, history_curr;
     private GameEvent gamedata;
     public State state;
-    private boolean on_standby, ended;
+    public int considering;
+    public boolean on_standby, ended, selected;
+    public Thread request;
     public Game(String playerName, JFrame frame, BufferedReader dataStream) throws Exception
     {
         this.playerName = playerName;
@@ -86,9 +105,12 @@ class Game
         this.state = new State(frame);
         this.on_standby = true;
         this.ended = false;
+        this.selected = false;
+        this.considering = 0;
+        this.request = new Thread();
         getGameData(dataStream, this.gamedata);
         dataStream.close();
-        printGameData(this.gamedata, ""); // comment on completion
+        //printGameData(this.gamedata, "");
     }
     private static void getGameData(BufferedReader br, GameEvent root) throws Exception
     {
@@ -140,11 +162,12 @@ class Game
     }
     public void next()
     {
-        if(on_standby || ended) return;
+        if(on_standby || ended || request.isAlive()) return;
         if(current == null)
         {
+            this.state.applyChanges(gamedata.stateChange);
             current = gamedata;
-            this.state.applyChanges(current.stateChange);
+            this.toggle();
             return;
         }
         if(history == null)
@@ -157,12 +180,23 @@ class Game
             history_curr.next = new GameEvent(current.eventDescripton, current.stateChange);
             history_curr = history_curr.next;
         }
-        if(current instanceof Choice)current = ((Choice)current).select(this.requestOption(), this.state);
+        if(current instanceof Choice)
+        {
+            this.request = new Thread(new Runnable(){
+                public void run()
+                {
+                    while(!selected){try{Thread.sleep(1);}catch(InterruptedException e){}}
+                    current = ((Choice)current).select(considering - 1, state);
+                    selected = false;
+                }
+            });
+            this.request.start();
+        }
         else
         {
+            if(current.next == null) ended = true;
+            else this.state.applyChanges(current.next.stateChange);
             current = current.next;
-            if(current == null) ended = true;
-            else this.state.applyChanges(current.stateChange);
         }
         this.toggle();
     }
@@ -184,6 +218,13 @@ class Game
             else event = event.next;
         }
     }
+    private static int getFittableUpto(String str, int maxLen)
+    {
+        if(str.length() <= maxLen) return str.length();
+        int i = maxLen - 1;
+        for(; i >= 0; i--) if(str.charAt(i) == ' ')break;
+        return i;
+    }
     public void draw(Graphics g, Dimension d)
     {
         // base
@@ -200,21 +241,55 @@ class Game
         g2d.setColor(new Color(255 - this.state.base.getRed(), 255 - this.state.base.getGreen(), 255 - this.state.base.getBlue()));
         g2d.setStroke(new BasicStroke(10.0f));
         g2d.drawRoundRect(0, 0, d.width, d.height, 20, 20);
+        g2d.setStroke(new BasicStroke());
         // current event text
         g2d.setColor(new Color(0, 0, 0, 127));
         g2d.fillRect(0, (int)(0.8 * d.getHeight()), (int)d.getWidth(), (int)(0.2 * d.getHeight()));
-        //g2d.drawString(this.current == null ? "Welcome " + this.playerName + " !": this.current.eventDescripton, (int)(0.01 * d.getWidth()), (int)(0.81 * d.getHeight()));
+        g2d.setColor(Color.WHITE);
+        g2d.setFont(new Font("Helevetica", Font.PLAIN, (int)(0.02 * (d.getHeight() + d.getWidth()))));
+        if(this.request.isAlive())
+        {
+            String[] opts = ((Choice)this.current).getOptionDescriptions();
+            int y = (int)(0.84 * d.getHeight()), x = (int)(0.01 * d.getWidth()), delta = g.getFont().getSize() + 3, index, maxLen;
+            g2d.setColor(this.state.blinker);
+            g2d.drawString(">>", x, y + this.considering * delta);
+            x += (int)(1.3 * delta);
+            maxLen = (int)Math.floor(2 * d.getWidth() / g.getFont().getSize()) - 2;
+            g2d.setColor(Color.WHITE);
+            for(int i = 0; i < opts.length; i++)
+            {
+                while(opts[i] != "")
+                {
+                    index = getFittableUpto(opts[i], maxLen);
+                    g2d.drawString(opts[i].substring(0, index), x, y);
+                    if(index == opts[i].length()) opts[i] = "";
+                    else opts[i] = opts[i].substring(index, opts[i].length()).trim();
+                    y += delta;
+                }
+            }
+        }
+        else
+        {
+            String text = "Welcome " + this.playerName + " ! Use Enter and UP / DOWN arrow keys !";
+            if(this.ended) text = "Thanks for playing !";
+            else if(this.state.transitioning && this.history_curr != null) text = this.history_curr.eventDescripton;
+            else if(!this.state.transitioning && this.current != null) text = this.current.eventDescripton;
+            int y = (int)(0.84 * d.getHeight()), x = (int)(0.01 * d.getWidth()), delta = g.getFont().getSize() + 3, index, maxLen;
+            maxLen = (int)Math.floor(2 * d.getWidth() / g.getFont().getSize());
+            while(text != "")
+            {
+                index = getFittableUpto(text, maxLen);
+                g2d.drawString(text.substring(0, index), x, y);
+                if(index == text.length()) text = "";
+                else text = text.substring(index, text.length()).trim();
+                y += delta;
+            }
+        }
         // overlay
         g.setColor(this.state.overlay);
         g.fillRect(0, 0, (int)d.getWidth(), (int)d.getHeight());
     }
     public void toggle(){this.on_standby = !this.on_standby;}
-    public int requestOption()
-    {
-        // request user to select a choice option
-        return 0;
-    }
-    public boolean ended(){return this.ended;}
 }
 class State
 {
@@ -223,7 +298,8 @@ class State
     public int gif;
     private JFrame frame;
     private boolean slow_base_change;
-    public Color base, overlay;
+    public Color base, overlay, blinker;
+    public boolean transitioning;
     public State(JFrame frame)
     {
         this.water_bar_value = (int)(0.75 * MAX_BAR_VALUE);
@@ -234,6 +310,7 @@ class State
         this.slow_base_change = false;
         this.gif = 0;
         this.frame = frame;
+        this.transitioning = false;
         new Thread(new Runnable(){
             public void run()
             {
@@ -262,9 +339,37 @@ class State
                 }
             }
         }).start();
+        new Thread(new Runnable(){
+            public void run()
+            {
+                int alpha = 255;
+                while(true)
+                {
+                    while(alpha >= 0)
+                    {
+                        blinker = new Color(255, 255, 255, alpha);
+                        alpha--;
+                        try{Thread.sleep(1);}
+                        catch(InterruptedException e){}
+                    }
+                    try{Thread.sleep(300);}
+                    catch(InterruptedException e){}
+                    while(alpha < 255)
+                    {
+                        alpha++;
+                        blinker = new Color(255, 255, 255, alpha);
+                        try{Thread.sleep(1);}
+                        catch(InterruptedException e){}
+                    }
+                    try{Thread.sleep(300);}
+                    catch(InterruptedException e){}
+                }
+            }
+        }).start();
     }
     public void applyChanges(int[] values)
     {
+        transitioning = true;
         this.water_bar_value += values[0];
         this.food_bar_value += values[1];
         this.energy_bar_value += values[2];
@@ -273,15 +378,20 @@ class State
             public void run()
             {
                 int new_gif = values[3], alpha = 0;
-                if(new_gif == gif) return;
+                if(new_gif == gif)
+                {
+                    transitioning = false;
+                    return;
+                }
                 while(alpha <= 255)
                 {
                     overlay = new Color(0, 0, 0, alpha);
                     alpha++;
-                    try{Thread.sleep(8);}
+                    try{Thread.sleep(3);}
                     catch(InterruptedException e){}
                 }
                 gif = new_gif;
+                transitioning = false;
                 Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
                 int WIDTH = (int)d.getWidth(), HEIGHT = (int)d.getHeight();
                 frame.setBounds(Math.max((WIDTH - (int)(1.04 * Game.media[gif].getWidth(null)))/2, 0),
@@ -294,7 +404,7 @@ class State
                 {
                     alpha--;
                     overlay = new Color(0, 0, 0, alpha);
-                    try{Thread.sleep(8);}
+                    try{Thread.sleep(3);}
                     catch(InterruptedException e){}
                 }
             }
