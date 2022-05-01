@@ -66,8 +66,8 @@ class Game
 {
     public static final char STATE_CHANGE_SYMBOL = '{', STATE_CHANGE_SEPERATOR = ':';
     public static final String PRINT_DELIMITER = "  ", STATE_CHANGE_DELIMITER = ",", START_SYMBOL = ":", END_SYMBOL = "|";
-    public static final Image[] media = {new ImageIcon(Run.class.getResource("sample.gif")).getImage(),
-                                         new ImageIcon(Run.class.getResource("another.gif")).getImage()};
+    public static final Image[] media = {new ImageIcon(Run.class.getResource("Sample.gif")).getImage(),
+                                         new ImageIcon(Run.class.getResource("Another.gif")).getImage()};
     private String playerName;
     private GameEvent history, current, history_curr;
     private GameEvent gamedata;
