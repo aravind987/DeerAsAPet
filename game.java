@@ -14,7 +14,9 @@ class Run
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         WIDTH = (int)d.getWidth();
         HEIGHT = (int)d.getHeight();
-        try{session = new Game(JOptionPane.showInputDialog(null, "What's your name !", "Dialog", JOptionPane.QUESTION_MESSAGE), new BufferedReader(new FileReader(new File("gamedata.txt"))));}
+        String name = JOptionPane.showInputDialog(null, "What's your name !", "Dialog", JOptionPane.QUESTION_MESSAGE);
+        if(name == null) System.exit(0);
+        try{session = new Game(name, new BufferedReader(new FileReader(new File("gamedata.txt"))));}
         catch(Exception e)
         {
             System.err.println("Game initialization failed : " + e.getMessage());
@@ -22,7 +24,10 @@ class Run
             System.exit(1);
         }
         JFrame f = new JFrame("Adventure Story !");
-        f.setBounds(0, 0, WIDTH, HEIGHT);
+        f.setBounds(Math.max((WIDTH - (int)(1.05 * Game.media[session.state.gif].getWidth(null)))/2, 0),
+                    Math.max((HEIGHT - (int)(1.05 * Game.media[session.state.gif].getHeight(null)))/2, 0),
+                    (int)(1.1 * Game.media[session.state.gif].getWidth(null)),
+                    (int)(1.1 * Game.media[session.state.gif].getHeight(null)));
         display = new JPanel()
         {
             public void paint(Graphics g)
@@ -62,11 +67,11 @@ class Game
 {
     public static final char STATE_CHANGE_SYMBOL = '{', STATE_CHANGE_SEPERATOR = ':';
     public static final String PRINT_DELIMITER = "  ", STATE_CHANGE_DELIMITER = ",", START_SYMBOL = ":", END_SYMBOL = "|";
-    private static final Image[] media = {new ImageIcon(Run.class.getResource("sample.gif")).getImage()};
+    public static final Image[] media = {new ImageIcon(Run.class.getResource("sample.gif")).getImage()};
     private String playerName;
     private GameEvent history, current, history_curr;
     private GameEvent gamedata;
-    private State state;
+    public State state;
     private boolean on_standby, ended;
     public Game(String playerName, BufferedReader dataStream) throws Exception
     {
@@ -74,13 +79,16 @@ class Game
         this.history = null;
         this.current = null;
         this.history_curr = null;
-        this.gamedata = new GameEvent(dataStream.readLine().trim());
+        String line = dataStream.readLine().trim();
+        int stateChangePosition = line.indexOf(Game.STATE_CHANGE_SYMBOL);
+        if(stateChangePosition == -1) this.gamedata = new GameEvent(line, new int[State.STATE_SIZE]);
+        else this.gamedata = new GameEvent(line.substring(0, stateChangePosition).trim(), State.parse(line.substring(stateChangePosition + 1, line.length() - 1)));
         this.state = new State();
         this.on_standby = true;
         this.ended = false;
         getGameData(dataStream, this.gamedata);
         dataStream.close();
-        //printGameData(this.gamedata, ""); // comment on completion
+        printGameData(this.gamedata, ""); // comment on completion
     }
     private static void getGameData(BufferedReader br, GameEvent root) throws Exception
     {
@@ -99,19 +107,31 @@ class Game
             }
             else if(line.endsWith(END_SYMBOL))
             {
-                if(line.length() > 1){root.next = new GameEvent(line.trim().substring(0, line.length() - 1).trim());}
+                if(line.length() > 1)
+                {
+                    line = line.trim().substring(0, line.length() - 1).trim();
+                    int stateChangePosition = line.indexOf(Game.STATE_CHANGE_SYMBOL);
+                    if(stateChangePosition == -1) root.next = new GameEvent(line, new int[State.STATE_SIZE]);
+                    else root.next = new GameEvent(line.substring(0, stateChangePosition).trim(), State.parse(line.substring(stateChangePosition + 1, line.length() - 1)));
+                }
                 return;
             }
             else
             {
                 if(line.endsWith(START_SYMBOL))
                 {
-                    root.next = new Choice(line.trim().substring(0, line.length() - 1).trim());
+                    line = line.trim().substring(0, line.length() - 1).trim();
+                    int stateChangePosition = line.indexOf(Game.STATE_CHANGE_SYMBOL);
+                    if(stateChangePosition == -1) root.next = new Choice(line, new int[State.STATE_SIZE]);
+                    else root.next = new Choice(line.substring(0, stateChangePosition).trim(), State.parse(line.substring(stateChangePosition + 1, line.length() - 1)));
                     next_option = true;
                 }
                 else
                 {
-                    root.next = new GameEvent(line.trim());
+                    line = line.trim();
+                    int stateChangePosition = line.indexOf(Game.STATE_CHANGE_SYMBOL);
+                    if(stateChangePosition == -1) root.next = new GameEvent(line, new int[State.STATE_SIZE]);
+                    else root.next = new GameEvent(line.substring(0, stateChangePosition).trim(), State.parse(line.substring(stateChangePosition + 1, line.length() - 1)));
                     next_option = false;
                 }
                 root = root.next;
@@ -128,18 +148,19 @@ class Game
         }
         if(history == null)
         {
-            history = new GameEvent(current.eventDescripton);
+            history = new GameEvent(current.eventDescripton, current.stateChange);
             history_curr = history;
         }
         else
         {
-            history_curr.next = new GameEvent(current.eventDescripton);
+            history_curr.next = new GameEvent(current.eventDescripton, current.stateChange);
             history_curr = history_curr.next;
         }
         if(current instanceof Choice)current = ((Choice)current).select(this.requestOption(), this.state);
         else
         {
             current = current.next;
+            this.state.applyChanges(current.stateChange);
             if(current == null) ended = true;
         }
         this.toggle();
@@ -148,13 +169,13 @@ class Game
     {
         while(event != null)
         {
-            System.out.println(delim + event.eventDescripton);
+            System.out.println(delim + event.eventDescripton + " -> " + State.getChangeDescription(event.stateChange));
             if(event instanceof Choice)
             {
                 String[] opts = ((Choice)event).getOptionDescriptions();
                 for(int i = 0; i < opts.length; i++)
                 {
-                    System.out.println(delim + (i+1) + ") " + opts[i] + " -> " + State.getChangeDescription(((Choice)event).getStateChange(i-1)));
+                    System.out.println(delim + (i+1) + ") " + opts[i] + " -> " + State.getChangeDescription(((Choice)event).getStateChange(i)));
                     printGameData(((Choice)event).getOption(i-1).next, delim + PRINT_DELIMITER);
                 }
                 return;
@@ -164,8 +185,10 @@ class Game
     }
     public void draw(Graphics g, Dimension d)
     {
+        // base
         g.setColor(this.state.base);
         g.fillRect(0, 0, (int)d.getWidth(), (int)d.getHeight());
+        // history of events
         GameEvent e = history;
         String str = "";
         while(e != null)
@@ -180,13 +203,19 @@ class Game
         }
         g.setColor(Color.BLACK);
         g.drawChars(chrs, 0, str.length(), 100, 100);
-        //g.drawImage(media[0], 10, 10, media[0].getWidth(null), media[0].getWidth(null), Color.WHITE, null); // gif
-        // draw media temporary display
+        // gif
+        g.drawImage(media[this.state.gif],
+                    (int)Math.max((d.getWidth() - Game.media[this.state.gif].getWidth(null))/2, 0),
+                    (int)Math.max((d.getHeight() - Game.media[this.state.gif].getHeight(null))/2, 0),
+                    media[this.state.gif].getWidth(null),
+                    media[this.state.gif].getHeight(null), null, null);
+        // inverted boundary
         Graphics2D g2d = (Graphics2D)g;
         g2d.setColor(new Color(255 - this.state.base.getRed(), 255 - this.state.base.getGreen(), 255 - this.state.base.getBlue()));  // chrome yellow
         g2d.setStroke(new BasicStroke(10.0f));
         g2d.drawRoundRect(0, 0, d.width, d.height, 20, 20);
         // add here
+        // overlay
         g.setColor(this.state.overlay);
         g.fillRect(0, 0, (int)d.getWidth(), (int)d.getHeight());
     }
@@ -200,8 +229,9 @@ class Game
 }
 class State
 {
-    public static final int MAX_BAR_VALUE = 100, STATE_SIZE = 3;
-    private int water_bar_value, food_bar_value, energy_bar_value, gif;
+    public static final int MAX_BAR_VALUE = 100, STATE_SIZE = 4;
+    private int water_bar_value, food_bar_value, energy_bar_value;
+    public int gif;
     private boolean slow_base_change;
     public Color base, overlay;
     public State()
@@ -247,6 +277,29 @@ class State
         this.water_bar_value += values[0];
         this.food_bar_value += values[1];
         this.energy_bar_value += values[2];
+        new Thread(new Runnable()
+        {
+            public void run()
+            {
+                int new_gif = values[3], alpha = 0;
+                if(new_gif == gif) return;
+                while(alpha <= 255)
+                {
+                    overlay = new Color(0, 0, 0, alpha);
+                    alpha++;
+                    try{Thread.sleep(8);}
+                    catch(InterruptedException e){}
+                }
+                gif = new_gif;
+                while(alpha > 0)
+                {
+                    alpha--;
+                    overlay = new Color(0, 0, 0, alpha);
+                    try{Thread.sleep(8);}
+                    catch(InterruptedException e){}
+                }
+            }
+        }).start();
         this.water_bar_value = Math.min(MAX_BAR_VALUE, Math.max(0, water_bar_value));
         this.food_bar_value = Math.min(MAX_BAR_VALUE, Math.max(0, food_bar_value));
         this.energy_bar_value = Math.min(MAX_BAR_VALUE, Math.max(0, energy_bar_value));
@@ -270,6 +323,7 @@ class State
             case "water": return 0;
             case "food": return 1;
             case "energy": return 2;
+            case "gif": return 3;
             default: return -1;
         }
     }
@@ -278,7 +332,8 @@ class State
         String desc = "";
         desc += "water: " + (values[0] < 0 ? "" : "+") + values[0] + ", ";
         desc += "food: " + (values[1] < 0 ? "" : "+") + values[1] + ", ";
-        desc += "energy: " + (values[2] < 0 ? "" : "+") + values[2];
+        desc += "energy: " + (values[2] < 0 ? "" : "+") + values[2] + ", ";
+        desc += "gif: " + values[3];
         return desc;
     }
     public void toggle_base_change(){this.slow_base_change = !this.slow_base_change;}
@@ -287,21 +342,30 @@ class GameEvent
 {
     public String eventDescripton;
     public GameEvent next;
+    public int[] stateChange;
     public GameEvent()
     {
         this.eventDescripton = "";
         this.next = null;
+        this.stateChange = new int[State.STATE_SIZE];
     }
     public GameEvent(String eventDescripton)
     {
         this.eventDescripton = eventDescripton;
         this.next = null;
+        this.stateChange = new int[State.STATE_SIZE];
+    }
+    public GameEvent(String eventDescripton, int[] stateChange)
+    {
+        this.eventDescripton = eventDescripton;
+        this.next = null;
+        this.stateChange = stateChange;
     }
 }
 class Choice extends GameEvent
 {
-    private ArrayList<GameEvent> options;
-    private ArrayList<int[]> stateChanges;
+    public ArrayList<GameEvent> options;
+    public ArrayList<int[]> stateChanges;
     public Choice()
     {
         super();
@@ -311,6 +375,12 @@ class Choice extends GameEvent
     public Choice(String desc)
     {
         super(desc);
+        this.options = new ArrayList<GameEvent>();
+        this.stateChanges = new ArrayList<int[]>();
+    }
+    public Choice(String desc, int[] stateChange)
+    {
+        super(desc, stateChange);
         this.options = new ArrayList<GameEvent>();
         this.stateChanges = new ArrayList<int[]>();
     }
@@ -338,7 +408,11 @@ class Choice extends GameEvent
         if(option == -1) return this.next;
         return this.options.get(option);
     }
-    public int[] getStateChange(int option){return this.stateChanges.get(option + 1);}
+    public int[] getStateChange(int option)
+    {
+        if(option == -1) return this.stateChange;
+        return this.stateChanges.get(option);
+    }
     public GameEvent select(int option, State s)
     {
         s.applyChanges(this.getStateChange(option));
