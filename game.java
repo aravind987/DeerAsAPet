@@ -45,13 +45,7 @@ class Run
         area.setBounds(0, 0, fr.getWidth(), fr.getHeight());
         area.setEditable(false);
         area.setBackground(Color.WHITE);
-        area.addComponentListener(new ComponentAdapter()
-        {
-            public void componentResized(ComponentEvent e)
-            {
-                area.setFont(new Font("Helevetica", Font.PLAIN, (int)(0.019 * (area.getHeight() + area.getWidth()))));
-            }
-        });
+        area.setFont(new Font("Helevetica", Font.PLAIN, (int)(0.021 * (area.getHeight() + area.getWidth()))));
         fr.add(new JScrollPane(area));
         f.addKeyListener(new KeyAdapter()
         {
@@ -137,7 +131,7 @@ class Game
         this.request = new Thread();
         getGameData(dataStream, this.gamedata);
         dataStream.close();
-        printGameData(this.gamedata, "");  // comment
+        //printGameData(this.gamedata, "");  // comment
     }
     private static void getGameData(BufferedReader br, GameEvent root) throws Exception
     {
@@ -148,10 +142,19 @@ class Game
             if(line.equals(""))continue;
             if(Character.isDigit(line.charAt(0)))
             {
-                if(line.endsWith(END_SYMBOL))((Choice)root).addOption(line.substring(1, line.length() - 1).trim());
+                if(line.endsWith(END_SYMBOL))
+                {
+                    line = line.substring(1, line.length() - 1).trim();
+                    int stateChangePosition = line.indexOf(Game.STATE_CHANGE_SYMBOL);
+                    if(stateChangePosition == -1) ((Choice)root).addOption(line, root.stateChange);
+                    else ((Choice)root).addOption(line.substring(0, stateChangePosition).trim(), State.parse(line.substring(stateChangePosition + 1, line.length() - 1)));
+                }
                 else
                 {
-                    ((Choice)root).addOption(line.substring(1).trim());
+                    line = line.substring(1).trim();
+                    int stateChangePosition = line.indexOf(Game.STATE_CHANGE_SYMBOL);
+                    if(stateChangePosition == -1) ((Choice)root).addOption(line, root.stateChange);
+                    else ((Choice)root).addOption(line.substring(0, stateChangePosition).trim(), State.parse(line.substring(stateChangePosition + 1, line.length() - 1)));
                     getGameData(br, ((Choice)root).getLastOption());
                 }
             }
@@ -161,7 +164,7 @@ class Game
                 {
                     line = line.substring(0, line.length() - 1).trim();
                     int stateChangePosition = line.indexOf(Game.STATE_CHANGE_SYMBOL);
-                    if(stateChangePosition == -1) root.next = new GameEvent(line);
+                    if(stateChangePosition == -1) root.next = new GameEvent(line, root.stateChange);
                     else root.next = new GameEvent(line.substring(0, stateChangePosition).trim(), State.parse(line.substring(stateChangePosition + 1, line.length() - 1)));
                 }
                 return;
@@ -172,13 +175,13 @@ class Game
                 {
                     line = line.substring(0, line.length() - 1).trim();
                     int stateChangePosition = line.indexOf(Game.STATE_CHANGE_SYMBOL);
-                    if(stateChangePosition == -1) root.next = new Choice(line);
+                    if(stateChangePosition == -1) root.next = new Choice(line, root.stateChange);
                     else root.next = new Choice(line.substring(0, stateChangePosition).trim(), State.parse(line.substring(stateChangePosition + 1, line.length() - 1)));
                 }
                 else
                 {
                     int stateChangePosition = line.indexOf(Game.STATE_CHANGE_SYMBOL);
-                    if(stateChangePosition == -1) root.next = new GameEvent(line);
+                    if(stateChangePosition == -1) root.next = new GameEvent(line, root.stateChange);
                     else root.next = new GameEvent(line.substring(0, stateChangePosition).trim(), State.parse(line.substring(stateChangePosition + 1, line.length() - 1)));
                 }
                 root = root.next;
@@ -199,7 +202,7 @@ class Game
             else if(current instanceof Choice) history += "Branch event: ";
             else history += "Game event: ";
             for(int i = 0; i < this.branches.size(); i++) history += Game.PRINT_DELIMITER;
-            history += current.eventDescripton + ". Effects: " + State.getLightChangeDescription(current.stateChange) + "\n";
+            history += (current.eventDescripton == "" ? "<empty>" : current.eventDescripton) + ". Effects: " + State.getLightChangeDescription(current.stateChange) + "\n";
             history_curr = current;
             if(current instanceof Choice)
             {
@@ -209,6 +212,7 @@ class Game
                         while(!selected){try{Thread.sleep(1);}catch(InterruptedException e){}}
                         branches.add(current);
                         current = ((Choice)current).select(considering, state);
+                        state.applyChanges(current.stateChange);
                         selected = false;
                         considering = 0;
                     }
@@ -566,6 +570,20 @@ class Choice extends GameEvent
         }
         else this.stateChanges.add(State.parse(option.substring(stateChangePosition + 1, option.length() - 1)));
         this.options.add(new GameEvent(option.substring(0, stateChangePosition).trim()));
+    }
+    public void addOption(String option, int[] stateChange)
+    {
+        int stateChangePosition = option.indexOf(Game.STATE_CHANGE_SYMBOL);
+        if(stateChangePosition == -1)
+        {
+            this.stateChanges.add(stateChange);
+            this.options.add(new GameEvent(option, stateChange));
+        }
+        else
+        {
+            this.stateChanges.add(State.parse(option.substring(stateChangePosition + 1, option.length() - 1)));
+            this.options.add(new GameEvent(option.substring(0, stateChangePosition).trim(), stateChanges.get(stateChanges.size() - 1)));
+        }
     }
     public GameEvent select(int option, State s)
     {

@@ -1,4 +1,4 @@
-The rolls of paper on the desk fall onto the floor, scattering as the aircraft continues to wobble. The control panel dials spin in wild directions, lights flashing as you hold on tightly to your seat. 
+The rolls of paper on the desk fall onto the floor, scattering as the aircraft continues to wobble. The control panel dials spin in wild directions, lights flashing as you hold on tightly to your seat. {gif: 1}
 The starlight blinds you as you wince at its brightness, thanking the tinted viewpanel of your helmet. This was supposed to be another expedition to Mars, what went wrong?
 You glance sideways and notice your backpack.
 :
@@ -24,7 +24,7 @@ Dust from outside blows in and the metal boards creak under the breeze. You look
 1 Let's explore.|
 You get up, reaching over to the food pack that lay on its side. Your hands almost reach the pack when a thin, wine red arm swings through the aircraft boards and snatch it away from you. 
 :
-1 What was that? It was… scaly.|
+1 What was that? It was... scaly.|
 You hide in the dark as you peek through the metal boards. 
 The organism has its back to you, giving you a view of its short but curly tail. It pours the water out of the bottle in the food back, splattering the liquid over the rocks on the ground. It goes for the freeze dried berries next, ripping open its packaging and stuffing it's arms into it. 
 The batteries of the food pack pops out from the package, rolling towards you.
@@ -55,6 +55,7 @@ The footprints were rather small for an organism twice your size; they were simi
 1 Scan the ores.|
 Hm, it seems like it doesn’t recognize it. You take a small chunk that lay on the side in your hands, using it to guide you in the dark.
 You grip your machine tightly as you walk in, ready to face what’s ahead. If the organism attacks you, you can aim for its huge eyeball. It’ll be easy, right?
+:
 1 Continue walking.|
 The further down you go, the more you start to doubt your choices. Seriously, what were you thinking? You’re on an unknown planet, chasing after the thief that took your last portions of food. That organism could easily pull out some sci-fi movie move and say, telepathically control you.
 :
@@ -298,7 +299,4 @@ NOMIA pops out of your pocket and flies around your lazily.
 1 They're different. I love what I'm doing, but I don't want to be pushed in a cycle of work.|
 NOMIA falls silent for a second. 
 "NOKIA once said that work is inevitable. Something along the lines of 'carrying on is a duty of our own'. NOMIA wasn't listening."
-You laugh a little. Although what the robot said didn't effectively convince you, you decide it's best to keep your thoughts to yourself. Subconsciously, you carry on. 
-
-
-
+You laugh a little. Although what the robot said didn't effectively convince you, you decide it's best to keep your thoughts to yourself. Subconsciously, you carry on.
