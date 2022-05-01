@@ -189,21 +189,6 @@ class Game
         // base
         g.setColor(this.state.base);
         g.fillRect(0, 0, (int)d.getWidth(), (int)d.getHeight());
-        // history of events
-        GameEvent e = history;
-        String str = "";
-        while(e != null)
-        {
-            str += e.eventDescripton + " \n";
-            e = e.next;
-        }
-        char[] chrs = new char[str.length()];
-        for(int i = 0; i< str.length(); i++)
-        {
-            chrs[i] = str.charAt(i);
-        }
-        g.setColor(Color.BLACK);
-        g.drawChars(chrs, 0, str.length(), 100, 100);
         // gif
         g.drawImage(media[this.state.gif],
                     (int)Math.max((d.getWidth() - Game.media[this.state.gif].getWidth(null))/2, 0),
@@ -212,10 +197,13 @@ class Game
                     media[this.state.gif].getHeight(null), null, null);
         // inverted boundary
         Graphics2D g2d = (Graphics2D)g;
-        g2d.setColor(new Color(255 - this.state.base.getRed(), 255 - this.state.base.getGreen(), 255 - this.state.base.getBlue()));  // chrome yellow
+        g2d.setColor(new Color(255 - this.state.base.getRed(), 255 - this.state.base.getGreen(), 255 - this.state.base.getBlue()));
         g2d.setStroke(new BasicStroke(10.0f));
         g2d.drawRoundRect(0, 0, d.width, d.height, 20, 20);
-        // add here
+        // current event text
+        g2d.setColor(new Color(0, 0, 0, 127));
+        g2d.fillRect(0, (int)(0.8 * d.getHeight()), (int)d.getWidth(), (int)(0.2 * d.getHeight()));
+        //g2d.drawString(this.current == null ? "Welcome " + this.playerName + " !": this.current.eventDescripton, (int)(0.01 * d.getWidth()), (int)(0.81 * d.getHeight()));
         // overlay
         g.setColor(this.state.overlay);
         g.fillRect(0, 0, (int)d.getWidth(), (int)d.getHeight());
@@ -300,6 +288,8 @@ class State
                                 Math.max((HEIGHT - (int)(1.08 * Game.media[gif].getHeight(null)))/2, 0),
                                 Math.min((int)(1.08 * Game.media[gif].getWidth(null)), WIDTH),
                                 Math.min((int)(1.16 * Game.media[gif].getHeight(null)), HEIGHT));
+                try{Thread.sleep(50);}
+                catch(InterruptedException e){}
                 while(alpha > 0)
                 {
                     alpha--;
@@ -427,11 +417,11 @@ class Choice extends GameEvent
         s.applyChanges(this.getStateChange(option));
         return this.getOption(option);
     }
-    public GameEvent getLastOption(){return this.getOption(this.options.size() - 1);}
     public String[] getOptionDescriptions()
     {
         String[] options = new String[this.options.size() + 1];
         for(int i = 0; i <= this.options.size(); i++){options[i] = this.getOption(i-1).eventDescripton;}
         return options;
     }
+    public GameEvent getLastOption(){return this.getOption(this.options.size() - 1);}
 }
